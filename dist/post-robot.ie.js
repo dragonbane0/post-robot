@@ -693,7 +693,7 @@
             CROSS_DOMAIN_WINDOW: "cross_domain_window"
         };
         function global_getGlobal(win) {
-            return void 0 === win && (win = window), win !== window ? win.__post_robot_10_0_10__ : win.__post_robot_10_0_10__ = win.__post_robot_10_0_10__ || {};
+            return void 0 === win && (win = window), win !== window ? win.__post_robot_10_0_11__ : win.__post_robot_10_0_11__ = win.__post_robot_10_0_11__ || {};
         }
         var getObj = function() {
             return {};
@@ -1451,7 +1451,7 @@
         function send_sendMessage(win, domain, message, _ref) {
             var _serializeMessage, on = _ref.on, send = _ref.send;
             if (isWindowClosed(win)) throw new Error("Window is closed");
-            for (var serializedMessage = serializeMessage(win, domain, ((_serializeMessage = {}).__post_robot_10_0_10__ = _extends({
+            for (var serializedMessage = serializeMessage(win, domain, ((_serializeMessage = {}).__post_robot_10_0_11__ = _extends({
                 id: uniqueID(),
                 origin: getDomain(window)
             }, message), _serializeMessage), {
@@ -1572,23 +1572,26 @@
         }, _RECEIVE_MESSAGE_TYPE.postrobot_message_ack = function(source, origin, message) {
             if (!isResponseListenerErrored(message.hash)) {
                 var options = getResponseListener(message.hash);
-                if (!options) throw new Error("No handler found for post message ack for message: " + message.name + " from " + origin + " in " + window.location.protocol + "//" + window.location.host + window.location.pathname);
-                if (!matchDomain(options.domain, origin)) throw new Error("Ack origin " + origin + " does not match domain " + options.domain.toString());
-                if (source !== options.win) throw new Error("Ack source does not match registered window");
-                options.ack = !0;
+                if (options) {
+                    if (!matchDomain(options.domain, origin)) throw new Error("Ack origin " + origin + " does not match domain " + options.domain.toString());
+                    if (source !== options.win) throw new Error("Ack source does not match registered window");
+                    options.ack = !0;
+                }
             }
         }, _RECEIVE_MESSAGE_TYPE.postrobot_message_response = function(source, origin, message) {
             if (!isResponseListenerErrored(message.hash)) {
-                var pattern, options = getResponseListener(message.hash);
-                if (!options) throw new Error("No handler found for post message response for message: " + message.name + " from " + origin + " in " + window.location.protocol + "//" + window.location.host + window.location.pathname);
-                if (!matchDomain(options.domain, origin)) throw new Error("Response origin " + origin + " does not match domain " + (pattern = options.domain, 
-                Array.isArray(pattern) ? "(" + pattern.join(" | ") + ")" : isRegex(pattern) ? "RegExp(" + pattern.toString() : pattern.toString()));
-                if (source !== options.win) throw new Error("Response source does not match registered window");
-                deleteResponseListener(message.hash), "error" === message.ack ? options.promise.reject(message.error) : "success" === message.ack && options.promise.resolve({
-                    source: source,
-                    origin: origin,
-                    data: message.data
-                });
+                var options = getResponseListener(message.hash);
+                if (options) {
+                    if (!matchDomain(options.domain, origin)) throw new Error("Response origin " + origin + " does not match domain " + (pattern = options.domain, 
+                    Array.isArray(pattern) ? "(" + pattern.join(" | ") + ")" : isRegex(pattern) ? "RegExp(" + pattern.toString() : pattern.toString()));
+                    var pattern;
+                    if (source !== options.win) throw new Error("Response source does not match registered window");
+                    deleteResponseListener(message.hash), "error" === message.ack ? options.promise.reject(message.error) : "success" === message.ack && options.promise.resolve({
+                        source: source,
+                        origin: origin,
+                        data: message.data
+                    });
+                }
             }
         }, _RECEIVE_MESSAGE_TYPE);
         function receive_receiveMessage(event, _ref2) {
@@ -1609,7 +1612,7 @@
                 } catch (err) {
                     return;
                 }
-                if (parsedMessage && "object" == typeof parsedMessage && null !== parsedMessage && (parsedMessage = parsedMessage.__post_robot_10_0_10__) && "object" == typeof parsedMessage && null !== parsedMessage && parsedMessage.type && "string" == typeof parsedMessage.type && RECEIVE_MESSAGE_TYPES[parsedMessage.type]) return parsedMessage;
+                if (parsedMessage && "object" == typeof parsedMessage && null !== parsedMessage && (parsedMessage = parsedMessage.__post_robot_10_0_11__) && "object" == typeof parsedMessage && null !== parsedMessage && parsedMessage.type && "string" == typeof parsedMessage.type && RECEIVE_MESSAGE_TYPES[parsedMessage.type]) return parsedMessage;
             }(event.data, source, origin, {
                 on: on,
                 send: send
@@ -1871,7 +1874,7 @@
         }
         function destroy() {
             var listener;
-            (listener = globalStore().get("postMessageListener")) && listener.cancel(), delete window.__post_robot_10_0_10__;
+            (listener = globalStore().get("postMessageListener")) && listener.cancel(), delete window.__post_robot_10_0_11__;
         }
         function cleanUpWindow(win) {
             for (var _i2 = 0, _requestPromises$get2 = windowStore("requestPromises").get(win, []); _i2 < _requestPromises$get2.length; _i2++) _requestPromises$get2[_i2].reject(new Error("Window cleaned up before response")).catch(src_util_noop);

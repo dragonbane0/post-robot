@@ -101,7 +101,7 @@ const RECEIVE_MESSAGE_TYPES = {
     const options = (0, _listeners.getResponseListener)(message.hash);
 
     if (!options) {
-      throw new Error(`No handler found for post message ack for message: ${message.name} from ${origin} in ${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+      return; // throw new Error(`No handler found for post message ack for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
     }
 
     if (!(0, _src2.matchDomain)(options.domain, origin)) {
@@ -123,7 +123,7 @@ const RECEIVE_MESSAGE_TYPES = {
     const options = (0, _listeners.getResponseListener)(message.hash);
 
     if (!options) {
-      throw new Error(`No handler found for post message response for message: ${message.name} from ${origin} in ${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+      return; // throw new Error(`No handler found for post message response for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
     }
 
     if (!(0, _src2.matchDomain)(options.domain, origin)) {
