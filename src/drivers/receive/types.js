@@ -56,7 +56,17 @@ export const RECEIVE_MESSAGE_TYPES = {
             ZalgoPromise.try(() => {
 
                 if (!options) {
-                    throw new Error(`No handler found for post message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
+                    // throw new Error(`No handler found for post message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
+                    // throw new Error('duplicate message handler skipped');
+
+                    return new ZalgoPromise((resolve, reject) => {
+                        if (!options) {
+                            reject('no_handler');
+                        }
+                        else {
+                            resolve();
+                        }
+                    });
                 }
 
                 if (!matchDomain(options.domain, origin)) {
@@ -69,7 +79,6 @@ export const RECEIVE_MESSAGE_TYPES = {
 
             }).then(data => {
                 return sendResponse(MESSAGE_TYPE.RESPONSE, MESSAGE_ACK.SUCCESS, { data });
-
             }, error => {
                 return sendResponse(MESSAGE_TYPE.RESPONSE, MESSAGE_ACK.ERROR, { error });
             })
@@ -92,7 +101,8 @@ export const RECEIVE_MESSAGE_TYPES = {
         const options = getResponseListener(message.hash);
 
         if (!options) {
-            throw new Error(`No handler found for post message ack for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
+            return;
+            // throw new Error(`No handler found for post message ack for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
         }
 
         if (!matchDomain(options.domain, origin)) {
@@ -115,7 +125,8 @@ export const RECEIVE_MESSAGE_TYPES = {
         const options = getResponseListener(message.hash);
 
         if (!options) {
-            throw new Error(`No handler found for post message response for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
+            return;
+            // throw new Error(`No handler found for post message response for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
         }
 
         if (!matchDomain(options.domain, origin)) {

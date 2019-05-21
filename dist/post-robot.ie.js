@@ -65,12 +65,12 @@
             return void 0 === win && (win = window), win.location.protocol === PROTOCOL.ABOUT;
         }
         function getParent(win) {
-            if (win) try {
+            if (void 0 === win && (win = window), win) try {
                 if (win.parent && win.parent !== win) return win.parent;
             } catch (err) {}
         }
         function getOpener(win) {
-            if (win && !getParent(win)) try {
+            if (void 0 === win && (win = window), win && !getParent(win)) try {
                 return win.opener;
             } catch (err) {}
         }
@@ -264,7 +264,7 @@
             return parent === getOpener(child);
         }
         function getAncestor(win) {
-            return getOpener(win = win || window) || getParent(win) || void 0;
+            return void 0 === win && (win = window), getOpener(win = win || window) || getParent(win) || void 0;
         }
         function anyMatch(collection1, collection2) {
             for (var _i17 = 0; _i17 < collection1.length; _i17++) for (var item1 = collection1[_i17], _i19 = 0; _i19 < collection2.length; _i19++) if (item1 === collection2[_i19]) return !0;
@@ -582,17 +582,16 @@
                 } catch (err) {
                     delete this.weakmap;
                 }
-                if (this.isSafeToReadWrite(key)) {
+                if (this.isSafeToReadWrite(key)) try {
                     var name = this.name, entry = key[name];
-                    entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
+                    return void (entry && entry[0] === key ? entry[1] = value : defineProperty(key, name, {
                         value: [ key, value ],
                         writable: !0
-                    });
-                } else {
-                    this._cleanupClosedWindows();
-                    var keys = this.keys, values = this.values, index = util_safeIndexOf(keys, key);
-                    -1 === index ? (keys.push(key), values.push(value)) : values[index] = value;
-                }
+                    }));
+                } catch (err) {}
+                this._cleanupClosedWindows();
+                var keys = this.keys, values = this.values, index = util_safeIndexOf(keys, key);
+                -1 === index ? (keys.push(key), values.push(value)) : values[index] = value;
             }, _proto.get = function(key) {
                 if (!key) throw new Error("WeakMap expected key");
                 var weakmap = this.weakmap;
@@ -601,14 +600,13 @@
                 } catch (err) {
                     delete this.weakmap;
                 }
-                if (!this.isSafeToReadWrite(key)) {
-                    this._cleanupClosedWindows();
-                    var index = util_safeIndexOf(this.keys, key);
-                    if (-1 === index) return;
-                    return this.values[index];
-                }
-                var entry = key[this.name];
-                if (entry && entry[0] === key) return entry[1];
+                if (this.isSafeToReadWrite(key)) try {
+                    var entry = key[this.name];
+                    return entry && entry[0] === key ? entry[1] : void 0;
+                } catch (err) {}
+                this._cleanupClosedWindows();
+                var index = util_safeIndexOf(this.keys, key);
+                if (-1 !== index) return this.values[index];
             }, _proto.delete = function(key) {
                 if (!key) throw new Error("WeakMap expected key");
                 var weakmap = this.weakmap;
@@ -617,14 +615,13 @@
                 } catch (err) {
                     delete this.weakmap;
                 }
-                if (this.isSafeToReadWrite(key)) {
+                if (this.isSafeToReadWrite(key)) try {
                     var entry = key[this.name];
                     entry && entry[0] === key && (entry[0] = entry[1] = void 0);
-                } else {
-                    this._cleanupClosedWindows();
-                    var keys = this.keys, index = util_safeIndexOf(keys, key);
-                    -1 !== index && (keys.splice(index, 1), this.values.splice(index, 1));
-                }
+                } catch (err) {}
+                this._cleanupClosedWindows();
+                var keys = this.keys, index = util_safeIndexOf(keys, key);
+                -1 !== index && (keys.splice(index, 1), this.values.splice(index, 1));
             }, _proto.has = function(key) {
                 if (!key) throw new Error("WeakMap expected key");
                 var weakmap = this.weakmap;
@@ -633,10 +630,10 @@
                 } catch (err) {
                     delete this.weakmap;
                 }
-                if (this.isSafeToReadWrite(key)) {
+                if (this.isSafeToReadWrite(key)) try {
                     var entry = key[this.name];
                     return !(!entry || entry[0] !== key);
-                }
+                } catch (err) {}
                 return this._cleanupClosedWindows(), -1 !== util_safeIndexOf(this.keys, key);
             }, _proto.getOrSet = function(key, getter) {
                 if (this.has(key)) return this.get(key);
@@ -693,7 +690,7 @@
             CROSS_DOMAIN_WINDOW: "cross_domain_window"
         };
         function global_getGlobal(win) {
-            return void 0 === win && (win = window), win !== window ? win.__post_robot_10_0_10__ : win.__post_robot_10_0_10__ = win.__post_robot_10_0_10__ || {};
+            return void 0 === win && (win = window), win !== window ? win.__post_robot_10_0_11__ : win.__post_robot_10_0_11__ = win.__post_robot_10_0_11__ || {};
         }
         var getObj = function() {
             return {};
@@ -1451,7 +1448,7 @@
         function send_sendMessage(win, domain, message, _ref) {
             var _serializeMessage, on = _ref.on, send = _ref.send;
             if (isWindowClosed(win)) throw new Error("Window is closed");
-            for (var serializedMessage = serializeMessage(win, domain, ((_serializeMessage = {}).__post_robot_10_0_10__ = _extends({
+            for (var serializedMessage = serializeMessage(win, domain, ((_serializeMessage = {}).__post_robot_10_0_11__ = _extends({
                 id: uniqueID(),
                 origin: getDomain(window)
             }, message), _serializeMessage), {
@@ -1550,7 +1547,9 @@
                 });
             }
             return promise_ZalgoPromise.all([ sendResponse("postrobot_message_ack"), promise_ZalgoPromise.try(function() {
-                if (!options) throw new Error("No handler found for post message: " + message.name + " from " + origin + " in " + window.location.protocol + "//" + window.location.host + window.location.pathname);
+                if (!options) return new promise_ZalgoPromise(function(resolve, reject) {
+                    options ? resolve() : reject("no_handler");
+                });
                 if (!matchDomain(options.domain, origin)) throw new Error("Request origin " + origin + " does not match domain " + options.domain.toString());
                 return options.handler({
                     source: source,
@@ -1572,23 +1571,26 @@
         }, _RECEIVE_MESSAGE_TYPE.postrobot_message_ack = function(source, origin, message) {
             if (!isResponseListenerErrored(message.hash)) {
                 var options = getResponseListener(message.hash);
-                if (!options) throw new Error("No handler found for post message ack for message: " + message.name + " from " + origin + " in " + window.location.protocol + "//" + window.location.host + window.location.pathname);
-                if (!matchDomain(options.domain, origin)) throw new Error("Ack origin " + origin + " does not match domain " + options.domain.toString());
-                if (source !== options.win) throw new Error("Ack source does not match registered window");
-                options.ack = !0;
+                if (options) {
+                    if (!matchDomain(options.domain, origin)) throw new Error("Ack origin " + origin + " does not match domain " + options.domain.toString());
+                    if (source !== options.win) throw new Error("Ack source does not match registered window");
+                    options.ack = !0;
+                }
             }
         }, _RECEIVE_MESSAGE_TYPE.postrobot_message_response = function(source, origin, message) {
             if (!isResponseListenerErrored(message.hash)) {
-                var pattern, options = getResponseListener(message.hash);
-                if (!options) throw new Error("No handler found for post message response for message: " + message.name + " from " + origin + " in " + window.location.protocol + "//" + window.location.host + window.location.pathname);
-                if (!matchDomain(options.domain, origin)) throw new Error("Response origin " + origin + " does not match domain " + (pattern = options.domain, 
-                Array.isArray(pattern) ? "(" + pattern.join(" | ") + ")" : isRegex(pattern) ? "RegExp(" + pattern.toString() : pattern.toString()));
-                if (source !== options.win) throw new Error("Response source does not match registered window");
-                deleteResponseListener(message.hash), "error" === message.ack ? options.promise.reject(message.error) : "success" === message.ack && options.promise.resolve({
-                    source: source,
-                    origin: origin,
-                    data: message.data
-                });
+                var options = getResponseListener(message.hash);
+                if (options) {
+                    if (!matchDomain(options.domain, origin)) throw new Error("Response origin " + origin + " does not match domain " + (pattern = options.domain, 
+                    Array.isArray(pattern) ? "(" + pattern.join(" | ") + ")" : isRegex(pattern) ? "RegExp(" + pattern.toString() : pattern.toString()));
+                    var pattern;
+                    if (source !== options.win) throw new Error("Response source does not match registered window");
+                    deleteResponseListener(message.hash), "error" === message.ack ? options.promise.reject(message.error) : "success" === message.ack && options.promise.resolve({
+                        source: source,
+                        origin: origin,
+                        data: message.data
+                    });
+                }
             }
         }, _RECEIVE_MESSAGE_TYPE);
         function receive_receiveMessage(event, _ref2) {
@@ -1609,7 +1611,7 @@
                 } catch (err) {
                     return;
                 }
-                if (parsedMessage && "object" == typeof parsedMessage && null !== parsedMessage && (parsedMessage = parsedMessage.__post_robot_10_0_10__) && "object" == typeof parsedMessage && null !== parsedMessage && parsedMessage.type && "string" == typeof parsedMessage.type && RECEIVE_MESSAGE_TYPES[parsedMessage.type]) return parsedMessage;
+                if (parsedMessage && "object" == typeof parsedMessage && null !== parsedMessage && (parsedMessage = parsedMessage.__post_robot_10_0_11__) && "object" == typeof parsedMessage && null !== parsedMessage && parsedMessage.type && "string" == typeof parsedMessage.type && RECEIVE_MESSAGE_TYPES[parsedMessage.type]) return parsedMessage;
             }(event.data, source, origin, {
                 on: on,
                 send: send
@@ -1871,7 +1873,7 @@
         }
         function destroy() {
             var listener;
-            (listener = globalStore().get("postMessageListener")) && listener.cancel(), delete window.__post_robot_10_0_10__;
+            (listener = globalStore().get("postMessageListener")) && listener.cancel(), delete window.__post_robot_10_0_11__;
         }
         function cleanUpWindow(win) {
             for (var _i2 = 0, _requestPromises$get2 = windowStore("requestPromises").get(win, []); _i2 < _requestPromises$get2.length; _i2++) _requestPromises$get2[_i2].reject(new Error("Window cleaned up before response")).catch(src_util_noop);

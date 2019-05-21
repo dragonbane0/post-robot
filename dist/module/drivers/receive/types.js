@@ -63,7 +63,15 @@ const RECEIVE_MESSAGE_TYPES = {
 
     return _src.ZalgoPromise.all([sendResponse(_conf.MESSAGE_TYPE.ACK), _src.ZalgoPromise.try(() => {
       if (!options) {
-        throw new Error(`No handler found for post message: ${message.name} from ${origin} in ${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+        // throw new Error(`No handler found for post message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
+        // throw new Error('duplicate message handler skipped');
+        return new _src.ZalgoPromise((resolve, reject) => {
+          if (!options) {
+            reject('no_handler');
+          } else {
+            resolve();
+          }
+        });
       }
 
       if (!(0, _src2.matchDomain)(options.domain, origin)) {
@@ -101,7 +109,7 @@ const RECEIVE_MESSAGE_TYPES = {
     const options = (0, _listeners.getResponseListener)(message.hash);
 
     if (!options) {
-      throw new Error(`No handler found for post message ack for message: ${message.name} from ${origin} in ${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+      return; // throw new Error(`No handler found for post message ack for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
     }
 
     if (!(0, _src2.matchDomain)(options.domain, origin)) {
@@ -123,7 +131,7 @@ const RECEIVE_MESSAGE_TYPES = {
     const options = (0, _listeners.getResponseListener)(message.hash);
 
     if (!options) {
-      throw new Error(`No handler found for post message response for message: ${message.name} from ${origin} in ${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+      return; // throw new Error(`No handler found for post message response for message: ${ message.name } from ${ origin } in ${ window.location.protocol }//${ window.location.host }${ window.location.pathname }`);
     }
 
     if (!(0, _src2.matchDomain)(options.domain, origin)) {
